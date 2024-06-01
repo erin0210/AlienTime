@@ -22,15 +22,14 @@ const alienReference: AlienReference = {
 
 const earthReferenceTime: Date = new Date('1970-01-01T00:00:00Z')
 
-export function calculateAlienTime(): string {
+export function calculateAlienTime() {
   const earthSecondsSinceReference = Math.floor(
     (new Date().getTime() - earthReferenceTime.getTime()) / 1000
   ) // Seconds since reference in Earth time (rounded down)
   const alienSecondsSinceReference = earthSecondsSinceReference * 0.5 // Convert to Alien seconds (1 second alien time = 0.5 second earth time)
 
-  const remainingAlienSeconds = alienReference.second + (alienSecondsSinceReference % 90)
-  const alienMinutes =
-    alienReference.minute + Math.floor((alienReference.second + alienSecondsSinceReference) / 90)
+  const remainingAlienSeconds = alienSecondsSinceReference % 90
+  const alienMinutes = alienReference.minute + Math.floor(alienSecondsSinceReference / 90)
 
   const remainingAlienMinutes = alienMinutes % 90
   const alienHours = alienReference.hour + Math.floor(alienMinutes / 90)
@@ -63,18 +62,52 @@ export function calculateAlienTime(): string {
   return `${formattedDate}\n${formattedTime}`
 }
 
-export function checkAlarm(
-  alarmSet: boolean,
-  alarmTime: string,
-  now: Date,
-  showModal: boolean
-): boolean {
+export function checkAlarm(alarmSet: boolean, alarmTime: string, now: Date): boolean {
   if (alarmSet) {
     const currentFormattedTime = now.toTimeString().slice(0, 5)
     if (alarmTime === currentFormattedTime) {
-      showModal = true
       return true
     }
   }
   return false
+}
+
+export function checkAlienAlarm(alarmSet: boolean, alarmTime: string, now: string): boolean {
+  if (alarmSet) {
+    const currentFormattedTime = now.toString().slice(0, 5)
+    if (alarmTime === currentFormattedTime) {
+      return true
+    }
+  }
+  return false
+}
+
+export function convertEarthToAlien(earthTime: Date): string {
+  Math.floor((earthTime.getTime() - earthReferenceTime.getTime()) / 1000)
+
+  // Use the calculateAlienTime logic to convert the seconds to date and time
+  const alienDateTime = calculateAlienTime() // Remove the argument from the function call
+
+  return alienDateTime
+}
+
+export function convertAlienToEarth(alienTime: string): Date {
+  const [alienDate, alienTimePart] = alienTime.split('\n')
+  const [alienDay, alienMonth, alienYear] = alienDate.split('/').map(Number)
+  const [alienHour, alienMinute, alienSecond] = alienTimePart.split(':').map(Number)
+
+  // Calculate the total alien seconds since the reference date
+  const alienSecondsSinceReference =
+    ((alienYear - alienReference.year) * alienDaysPerMonth.reduce((a, b) => a + b, 0) * 36 * 90 +
+      (alienMonth - 1 - alienReference.month) * alienDaysPerMonth[alienMonth - 1] * 36 * 90 +
+      (alienDay - 1 - alienReference.day) * 36 * 90 +
+      (alienHour - alienReference.hour) * 90 +
+      (alienMinute - alienReference.minute)) /
+      2 + // Convert to Earth seconds
+    (alienSecond - alienReference.second) / 2
+
+  // Add the seconds to the reference Earth time
+  const earthTime = new Date(earthReferenceTime.getTime() + alienSecondsSinceReference * 1000)
+
+  return earthTime
 }
