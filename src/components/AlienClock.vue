@@ -11,7 +11,7 @@
         <button @click="setAlarm">Set Alarm</button>
       </div>
       <p v-if="alarmMessage">{{ alarmMessage }}</p>
-      <audio ref="alarmSound" src="/sounds/alarm.mp3"></audio>
+      <audio ref="alarmSound" src="./sounds/alarm.mp3"></audio>
 
       <div v-if="showModal" class="modal">
         <div class="modal-content">
