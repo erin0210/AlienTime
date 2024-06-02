@@ -13,16 +13,17 @@
           <div class="input-container">
             <div class="input-group">
               <label class="alarm-label" for="changeEarthDate">Set Date: </label>
-              <input :disabled="alienAlarmDate.length > 0" type="date" v-model="earthAlarmDate" id="changeEarthDate"
+              <input :disabled="alienAlarmTime.length > 0" type="date" v-model="earthAlarmDate" id="changeEarthDate"
                 @input="onChangeEarthDate" style="margin-right: 10px;">
             </div>
             <div class="input-group">
               <label for="updateEarthTime">Set Time:</label>
-              <input :disabled="earthAlarmDate.length === 0" type="time" v-model="alienAlarmTime" id="changeEarthTime"
+              <input :disabled="earthAlarmDate.length === 0" type="time" v-model="earthAlarmTime" id="changeEarthTime"
                 @input="onChangeEarthTime" style="margin-right: 10px;">
             </div>
           </div>
-          <button @click="setAlarm">Set Alarm</button>
+          <button :disabled="alienAlarmTime.length !== 0 || earthAlarmTime.length !== 0" @click="setAlarm">Set
+            Alarm</button>
         </div>
         <p v-if="earthAlarmMessage">{{ earthAlarmMessage }}</p>
         <audio ref="alarmSound" src="./sounds/alarm.mp3"></audio>
@@ -40,23 +41,24 @@
         </h1>
         <br>
         <div class="clock">
-          <p>{{ currentAlienDate }}</p>
-          <p>{{ currentAlienTime }}</p>
+          <p>{{ alienCurrentDate }}</p>
+          <p>{{ alienCurrentTime }}</p>
         </div>
         <div class="alarm">
           <div class="input-container">
             <div class="input-group">
               <label for="changeAlienDate">Set Date: </label>
-              <input :disabled="earthAlarmDate.length > 0" type="date" v-model="alienAlarmDate" id="changeAlienDate"
+              <input :disabled="earthAlarmTime.length > 0" type="date" v-model="alienAlarmDate" id="changeAlienDate"
                 @input="onChangeAlienDate" style="margin-right: 10px;">
             </div>
             <div class="input-group">
-              <label for="changeAlienTime">Set Time:</label>
+              <label for="updateAlienTime">Set Time:</label>
               <input :disabled="alienAlarmDate.length === 0" type="time" v-model="alienAlarmTime" id="changeAlienTime"
-                @input="onChangeAlientTime" style="margin-right: 10px;">
+                @input="onChangeAlienTime" style="margin-right: 10px;">
             </div>
           </div>
-          <button disabled @click="setAlarm">Set Alarm</button>
+          <button :disabled="earthAlarmTime.length !== 0 || alienAlarmTime.length !== 0" @click="setAlarm">Set
+            Alarm</button>
         </div>
         <p v-if="alarmAlienMessage">{{ alarmAlienMessage }}</p>
         <audio ref="alarmAlienSound" src="./sounds/alarm.mp3"></audio>
@@ -83,7 +85,7 @@
 <script lang="ts">
 
 import { convertEarthToAlienTime, formatAlienTime } from '@/utility/alienTimeUtils';
-import { formatInputTextEarthDate, isValidDateEarthTimeFormat } from '@/utility/earthTimeUtility';
+import { convertAlienToEarth, formatInputTextEarthDate, isValidDateEarthTimeFormat } from '@/utility/earthTimeUtility';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -92,10 +94,14 @@ export default defineComponent({
       // earth
       currentTime: '',
       currentDate: '',
+      newEarthDate: '',
+      newEarthTime: '',
 
       // alien
       currentAlienTime: '',
       currentAlienDate: '',
+      newAlienDate: '',
+      newAlienTime: '',
 
       // alarm
       earthAlarmTime: '',
@@ -110,14 +116,15 @@ export default defineComponent({
       showModal: false,
       showAlienModal: false,
 
-      // state
-      isReset: false,
+      //id
+      intervalId: 0,
+
     };
   },
   created() {
     // alien time 2 times slower than earth time, update based on alien 1 second
     const interval = 2000 // 2 * 1 second
-    setInterval(() => {
+    this.intervalId = setInterval(() => {
       this.updateTime();
     }, interval);
   },
@@ -128,10 +135,16 @@ export default defineComponent({
     earthCurrentDate() {
       return formatInputTextEarthDate(this.earthAlarmDate) || this.currentDate;
     },
+    alienCurrentTime() {
+      return this.alienAlarmTime || this.currentAlienTime;
+    },
+    alienCurrentDate() {
+      return formatInputTextEarthDate(this.alienAlarmDate) || this.currentAlienDate;
+    },
   },
   methods: {
     onReset() {
-      this.isReset = !this.isReset;
+      location.reload()
     },
     updateTime() {
       const now = new Date();
@@ -146,19 +159,50 @@ export default defineComponent({
     },
     onChangeEarthTime(event: Event) {
       const input = event.target as HTMLInputElement;
-      this.earthAlarmTime = input.value;
+      this.earthAlarmTime = `${input.value}:00`;
+      this.newEarthTime = input.value;
     },
     onChangeEarthDate(event: Event) {
       const input = event.target as HTMLInputElement;
       this.earthAlarmDate = input.value;
+      this.newEarthDate = input.value;
     },
-    onChangeAlientTime(event: Event) {
+    onChangeAlienTime(event: Event) {
       const input = event.target as HTMLInputElement;
-      this.alienAlarmTime = input.value;
+      this.alienAlarmTime = `${input.value}:00`;
+      this.newAlienTime = input.value;
     },
     onChangeAlienDate(event: Event) {
       const input = event.target as HTMLInputElement;
       this.alienAlarmDate = input.value;
+      this.newAlienDate = input.value;
+    },
+    updateAlienDate() {
+      if (this.newEarthDate && this.newEarthTime) {
+        const newEarthDateTime = new Date(`${this.newEarthDate}T${this.newEarthTime}`);
+        const alienDate = convertEarthToAlienTime(newEarthDateTime);
+        const formattedAlienTime = formatAlienTime(alienDate);
+
+        this.currentAlienDate = formattedAlienTime.date;
+
+        this.currentAlienTime = formattedAlienTime.time;
+
+        // Stop the interval
+        clearInterval(this.intervalId);
+      }
+    },
+    updateEarthDate() {
+      if (this.newAlienDate && this.newAlienTime) {
+        const newAlienDateTime = `${this.newAlienDate.split('-').reverse().join('/')}\n${this.newAlienTime}:00`;
+        const earthDate = convertAlienToEarth(newAlienDateTime);
+
+        this.currentDate = formatInputTextEarthDate(earthDate.toISOString().split('T')[0]);
+
+        this.currentTime = earthDate.toTimeString().split(' ')[0];
+
+        // Stop the interval
+        clearInterval(this.intervalId);
+      }
     },
     setAlarm() {
       // if (checkAlienAlarm(this.alarmSet, this.alienAlarmTime, this.alienTime)) {
@@ -175,10 +219,50 @@ export default defineComponent({
       this.showModal = false;
     },
     validateEarthInput() {
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      const timeRegex = /^\d{2}:\d{2}$/;
 
+      if (!dateRegex.test(this.earthAlarmDate)) {
+        alert('Invalid Earth date. The format should be YYYY-MM-DD.');
+        return false;
+      }
+
+      if (!timeRegex.test(this.earthAlarmTime)) {
+        alert('Invalid Earth time. The format should be HH:MM.');
+        return false;
+      }
+
+      return true;
     },
     validateAlienInput() {
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      const timeRegex = /^\d{2}:\d{2}$/;
 
+      if (!dateRegex.test(this.newAlienDate)) {
+        alert('Invalid Alien date. The format should be YYYY-MM-DD.');
+        return false;
+      }
+
+      if (!timeRegex.test(this.newAlienTime)) {
+        alert('Invalid Alien time. The format should be HH:MM.');
+        return false;
+      }
+
+      return true;
+    },
+  },
+  watch: {
+    newEarthDate() {
+      this.updateAlienDate();
+    },
+    newEarthTime() {
+      this.updateAlienDate();
+    },
+    newAlienDate() {
+      this.updateEarthDate();
+    },
+    newAlienTime() {
+      this.updateEarthDate();
     },
   },
 });
