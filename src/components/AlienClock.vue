@@ -1,52 +1,72 @@
 <template>
   <div id="app">
-    <div id="card">
-      <h1>Earth Clock</h1>
-      <div class="clock">
-        <p>{{ earthCurrentDate }}<br>{{ earthCurrentTime }}</p>
-      </div>
-      <div class="alarm">
-        <label class="alarm-label" for="changeEarthDate">Set Date: </label>
-        <input :disabled="alienAlarmDate.length > 0" type="date" v-model="earthAlarmDate" id="changeEarthDate"
-          @input="onChangeEarthDate" style="margin-right: 10px;">
-        <label for="updateEarthTime">Set Time:</label>
-        <input :disabled="earthAlarmDate.length === 0" type="time" v-model="alienAlarmTime" id="changeEarthTime"
-          @input="onChangeEarthTime" style="margin-right: 10px;">
-        <button @click="setAlarm">Set Alarm</button>
-      </div>
-      <p v-if="earthAlarmMessage">{{ earthAlarmMessage }}</p>
-      <audio ref="alarmSound" src="./sounds/alarm.mp3"></audio>
-      <div v-if="showModal" class="modal">
-        <div class="modal-content">
-          <span class="close" @click="stopAlarm">&times;</span>
-          <p>⏰ Alarm ringing!</p>
-          <button @click="stopAlarm" class="stop-button">Stop</button>
+    <div class="card-container">
+      <div class="card">
+        <h1><img src="../assets/earth.png" alt="Earth Icon" style="height: 1em; vertical-align: middle;"> Earth
+          Clock
+          <img src="../assets/earth.png" alt="Earth Icon" style="height: 1em; vertical-align: middle;">
+        </h1><br>
+        <div class="clock">
+          <p>{{ earthCurrentDate }}<br>{{ earthCurrentTime }}</p>
+        </div>
+        <div class="alarm">
+          <div class="input-container">
+            <div class="input-group">
+              <label class="alarm-label" for="changeEarthDate">Set Date: </label>
+              <input :disabled="alienAlarmDate.length > 0" type="date" v-model="earthAlarmDate" id="changeEarthDate"
+                @input="onChangeEarthDate" style="margin-right: 10px;">
+            </div>
+            <div class="input-group">
+              <label for="updateEarthTime">Set Time:</label>
+              <input :disabled="earthAlarmDate.length === 0" type="time" v-model="alienAlarmTime" id="changeEarthTime"
+                @input="onChangeEarthTime" style="margin-right: 10px;">
+            </div>
+          </div>
+          <button @click="setAlarm">Set Alarm</button>
+        </div>
+        <p v-if="earthAlarmMessage">{{ earthAlarmMessage }}</p>
+        <audio ref="alarmSound" src="./sounds/alarm.mp3"></audio>
+        <div v-if="showModal" class="modal">
+          <div class="modal-content">
+            <span class="close" @click="stopAlarm">&times;</span>
+            <p>⏰ Alarm ringing!</p>
+            <button @click="stopAlarm" class="stop-button">Stop</button>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="card">
-      <h1>Alien Clock</h1>
-      <div class="clock">
-        <p>{{ currentAlienDate }}</p>
-        <p>{{ currentAlienTime }}</p>
-      </div>
-      <div class="alarm">
-        <label for="changeAlienDate">Set Date: </label>
-        <input :disabled="earthAlarmDate.length > 0" type="date" v-model="alienAlarmDate" id="changeAlienDate"
-          @input="onChangeAlienDate" style="margin-right: 10px;">
-        <label for="changeAlienTime">Set Time:</label>
-        <input :disabled="alienAlarmDate.length === 0" type="time" v-model="alienAlarmTime" id="changeAlienTime"
-          @input="onChangeAlientTime" style="margin-right: 10px;">
-        <button disabled @click="setAlarm">Set Alarm</button>
-      </div>
-      <p v-if="alarmAlienMessage">{{ alarmAlienMessage }}</p>
-      <audio ref="alarmAlienSound" src="./sounds/alarm.mp3"></audio>
+      <div class="card">
+        <h1><img src="../assets/venus.png" alt="Earth Icon" style="height: 1em; vertical-align: middle;"> Alien Clock
+          <img src="../assets/venus.png" alt="Earth Icon" style="height: 1em; vertical-align: middle;">
+        </h1>
+        <br>
+        <div class="clock">
+          <p>{{ currentAlienDate }}</p>
+          <p>{{ currentAlienTime }}</p>
+        </div>
+        <div class="alarm">
+          <div class="input-container">
+            <div class="input-group">
+              <label for="changeAlienDate">Set Date: </label>
+              <input :disabled="earthAlarmDate.length > 0" type="date" v-model="alienAlarmDate" id="changeAlienDate"
+                @input="onChangeAlienDate" style="margin-right: 10px;">
+            </div>
+            <div class="input-group">
+              <label for="changeAlienTime">Set Time:</label>
+              <input :disabled="alienAlarmDate.length === 0" type="time" v-model="alienAlarmTime" id="changeAlienTime"
+                @input="onChangeAlientTime" style="margin-right: 10px;">
+            </div>
+          </div>
+          <button disabled @click="setAlarm">Set Alarm</button>
+        </div>
+        <p v-if="alarmAlienMessage">{{ alarmAlienMessage }}</p>
+        <audio ref="alarmAlienSound" src="./sounds/alarm.mp3"></audio>
 
-      <div v-if="showAlienModal" class="modal">
-        <div class="modal-content">
-          <span class="close" @click="stopAlarm">&times;</span>
-          <p>⏰ Alarm ringing!</p>
-          <button @click="stopAlarm" class="stop-button">Stop</button>
+        <div v-if="showAlienModal" class="modal">
+          <div class="modal-content">
+            <span class="close" @click="stopAlarm">&times;</span>
+            <p>⏰ Alarm ringing!</p>
+            <button @click="stopAlarm" class="stop-button">Stop</button>
+          </div>
         </div>
       </div>
     </div>
