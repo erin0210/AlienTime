@@ -1,10 +1,13 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Space Mono', monospace;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f0f0f0;
+  background-image: url(../assets/space.jpg);
+  background-size: cover;
+  background-position: center;
+  color: #fff;
 }
 
 #app {
@@ -13,18 +16,18 @@ body {
 
 #card {
   text-align: center;
-  background: white;
+  background: #001e3e;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  box-shadow: 0 0 10px rgb(255, 255, 255);
   margin: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  background-clip: padding-box;
 }
 
-/* Media query for mobile view (adjust breakpoint as needed) */
 @media (max-width: 768px) {
   #app {
     flex-direction: column !important;
@@ -49,6 +52,7 @@ button {
   background-color: #4caf50;
   color: white;
   border-radius: 5px;
+  font-family: 'Space Mono', monospace;
 }
 
 button:hover {
@@ -71,7 +75,6 @@ input:disabled {
   cursor: not-allowed;
 }
 
-/* Modal styles */
 .modal {
   display: flex;
   justify-content: center;
@@ -87,12 +90,12 @@ input:disabled {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: #1c1c1c;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
   position: relative;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
   width: 70%;
 }
 
@@ -108,11 +111,10 @@ input:disabled {
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: white;
 }
 
 .stop-button {
-  background-color: #ff0000; /* Red color */
-  color: white; /* Text color */
-  /* Add any other styles as needed */
+  background-color: #ff0000;
+  color: white;
 }

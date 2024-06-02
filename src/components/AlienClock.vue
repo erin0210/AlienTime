@@ -6,7 +6,7 @@
         <p>{{ earthCurrentDate }}<br>{{ earthCurrentTime }}</p>
       </div>
       <div class="alarm">
-        <label class="alarm-label" for="changeEarthDate">Set Date:</label>
+        <label class="alarm-label" for="changeEarthDate">Set Date: </label>
         <input :disabled="alienAlarmDate.length > 0" type="date" v-model="earthAlarmDate" id="changeEarthDate"
           @input="onChangeEarthDate" style="margin-right: 10px;">
         <label for="updateEarthTime">Set Time:</label>
@@ -31,7 +31,7 @@
         <p>{{ currentAlienTime }}</p>
       </div>
       <div class="alarm">
-        <label for="changeAlienDate">Set Date:</label>
+        <label for="changeAlienDate">Set Date: </label>
         <input :disabled="earthAlarmDate.length > 0" type="date" v-model="alienAlarmDate" id="changeAlienDate"
           @input="onChangeAlienDate" style="margin-right: 10px;">
         <label for="changeAlienTime">Set Time:</label>
