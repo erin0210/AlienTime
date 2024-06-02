@@ -33,3 +33,9 @@ a,
     padding: 0 2rem;
   }
 }
+
+.resetBtnContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
