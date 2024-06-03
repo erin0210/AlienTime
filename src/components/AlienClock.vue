@@ -74,9 +74,13 @@
     </div>
   </div>
 
-  <div class="resetBtnContainer" @click="onReset">
-    <button>
+  <div class="actionButtonContainer">
+    <button @click="onReset">
       Reset
+    </button>
+
+    <button @click="onReferenceTime">
+      Reference Time
     </button>
   </div>
 
@@ -86,7 +90,11 @@
 
 import { convertEarthToAlienTime, formatAlienTime } from '@/utility/alienTimeUtils';
 import { convertAlienToEarth, formatInputTextEarthDate, isValidDateEarthTimeFormat } from '@/utility/earthTimeUtility';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { defineComponent } from 'vue';
+
+dayjs.extend(utc);
 
 export default defineComponent({
   data() {
@@ -119,6 +127,9 @@ export default defineComponent({
       //id
       intervalId: 0,
 
+      // misc
+      isUsingReferenceTime: false,
+
     };
   },
   created() {
@@ -143,19 +154,20 @@ export default defineComponent({
     },
   },
   methods: {
+    onReferenceTime() {
+      this.isUsingReferenceTime = !this.isUsingReferenceTime;
+    },
     onReset() {
       location.reload()
     },
     updateTime() {
-      const now = new Date();
+      const now = this.isUsingReferenceTime ? new Date('1970-01-01T00:00:00Z') : new Date()
       const alienTime = convertEarthToAlienTime(now);
       const { date: alienFormatDate, time: alientFormatTime } = formatAlienTime(alienTime);
       this.currentAlienTime = alientFormatTime;
       this.currentAlienDate = alienFormatDate;
-      this.currentTime = now.toLocaleTimeString('en-MY', {
-        hour12: false,
-      })
-      this.currentDate = now.toLocaleDateString('en-MY')
+      this.currentTime = dayjs.utc(now.toUTCString()).format('HH:mm:ss');
+      this.currentDate = dayjs(now.toUTCString()).format('DD/MM/YYYY');
     },
     onChangeEarthTime(event: Event) {
       const input = event.target as HTMLInputElement;
