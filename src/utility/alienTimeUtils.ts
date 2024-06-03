@@ -11,7 +11,7 @@
  * There are 18 months in a year.
  */
 
-import { EARTH_REFERENCE_TIME } from './earthTimeUtility'
+import { earthElapsedSeconds } from './earthTimeUtility'
 
 interface AlienReference {
   year: number
@@ -51,28 +51,31 @@ export const formatAlienTime = (alienTime: AlienReference) => {
 }
 
 export function convertEarthToAlienTime(earthTime: Date) {
-  const earthSecondsSinceReference = (earthTime.getTime() - EARTH_REFERENCE_TIME.getTime()) / 1000
+  const earthSecondsSinceReference = earthElapsedSeconds(earthTime)
 
   // 1 second Alien time is 0.5 second Earth time
-  const alienSecondsSinceReference = earthSecondsSinceReference / 2
+  const alienReferenceTime = ALIEN_REFERENCE_TIME
 
-  const alienMinutes = Math.floor(alienSecondsSinceReference / ALIEN_TIME_SYSTEM_PER.minute)
+  const alienSecondsSinceReference = earthSecondsSinceReference * 2 + alienReferenceTime.second
+
+  const alienMinutes =
+    Math.floor(alienSecondsSinceReference / ALIEN_TIME_SYSTEM_PER.minute) +
+    alienReferenceTime.minute
   const currentRemainingAlienSeconds = Math.floor(
     alienSecondsSinceReference % ALIEN_TIME_SYSTEM_PER.minute
   )
 
-  const alienHours = Math.floor(alienMinutes / ALIEN_TIME_SYSTEM_PER.hour)
+  const alienHours = Math.floor(alienMinutes / ALIEN_TIME_SYSTEM_PER.hour) + alienReferenceTime.hour
   const remainingAlienMinutes = Math.floor(alienMinutes % ALIEN_TIME_SYSTEM_PER.hour)
 
-  const alienDays = Math.floor(alienHours / ALIEN_TIME_SYSTEM_PER.day)
+  const alienDays = Math.floor(alienHours / ALIEN_TIME_SYSTEM_PER.day) + alienReferenceTime.day
   const remainingAlienHours = Math.floor(alienHours % ALIEN_TIME_SYSTEM_PER.day)
-
-  const { additionalYears, months, days } = convertDaysToDate(alienDays)
+  const { year, month, day } = convertDaysToDate(alienDays)
 
   return {
-    year: ALIEN_REFERENCE_TIME.year + additionalYears,
-    month: months,
-    day: days,
+    year,
+    month,
+    day,
     hour: remainingAlienHours,
     minute: remainingAlienMinutes,
     second: currentRemainingAlienSeconds
@@ -80,22 +83,27 @@ export function convertEarthToAlienTime(earthTime: Date) {
 }
 
 function convertDaysToDate(days: number) {
-  const yearPassed = Math.floor(days / TOTAL_ALIEN_DAYS)
+  const referenceTime = ALIEN_REFERENCE_TIME
+  let yearPassed = Math.floor(days / TOTAL_ALIEN_DAYS) + referenceTime.year
   let remainingDays = days % TOTAL_ALIEN_DAYS
-  let monthPassed = 0
+  let monthPassed = referenceTime.month
 
-  ALIEN_MONTHS.map((monthDays) => {
+  for (const monthDays of ALIEN_MONTHS) {
     if (remainingDays - monthDays < 0) {
-      monthPassed++
-      return
+      break
     }
     remainingDays -= monthDays
-  })
+    monthPassed++
+    if (monthPassed >= ALIEN_MONTHS.length) {
+      monthPassed = 0
+      yearPassed++
+    }
+  }
 
   return {
-    additionalYears: yearPassed,
-    months: monthPassed,
-    days: remainingDays
+    year: yearPassed,
+    month: monthPassed,
+    day: remainingDays
   }
 }
 

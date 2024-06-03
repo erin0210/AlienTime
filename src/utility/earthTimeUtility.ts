@@ -1,5 +1,13 @@
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+
+dayjs.extend(duration)
+
 export const EARTH_REFERENCE_TIME: Date = new Date('1970-01-01T00:00:00Z')
 
+export const earthElapsedSeconds = (earthTime: Date): number => {
+  return dayjs.duration(dayjs(earthTime).diff(EARTH_REFERENCE_TIME)).asSeconds()
+}
 export function convertAlienToEarth(alienTime: string): Date {
   const [alienDate, alienTimePart] = alienTime.split('\n')
   const [alienDay, alienMonth, alienYear] = alienDate.split('/').map(Number)
