@@ -1,18 +1,17 @@
-# alientime
+# Alien Clock and Earth Clock Comparison
 
-This template should help get you started developing with Vue 3 in Vite.
+🚀 See project here:
+[N2N AlienClock](https://erin0210.github.io/AlienTime/)
 
-## Recommended IDE Setup
+This project is a Vue 3 application developed with Vite. It provides a comparison between an Alien clock 👽 and an Earth clock 🌎.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+The application allows users to set alarms and convert times between the two clocks. The Alien clock operates on a different time system, and this application helps to bridge the understanding between the two.
 
-## Type Support for `.vue` Imports in TS
+The Alien clock is based on a custom time system, and the Earth clock follows the standard UTC time. Users can input a time in either clock, and the application will convert it to the corresponding time in the other clock.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Alarms can be set in both Earth and Alien time, and the application will alert the user when the alarm time is reached.
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+This application is an educational tool for understanding time systems and conversions.
 
 ## Project Setup
 
