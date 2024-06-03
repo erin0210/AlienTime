@@ -13,7 +13,7 @@
 
 import { earthElapsedSeconds } from './earthTimeUtility'
 
-interface AlienReference {
+export interface AlienReference {
   year: number
   month: number
   day: number
@@ -23,7 +23,7 @@ interface AlienReference {
 }
 
 // based on earth EARTH_REFERENCE_TIME
-const ALIEN_REFERENCE_TIME: AlienReference = {
+export const ALIEN_REFERENCE_TIME: AlienReference = {
   year: 2804,
   month: 18,
   day: 31,
@@ -45,8 +45,8 @@ const ALIEN_TIME_SYSTEM_PER = {
 
 export const formatAlienTime = (alienTime: AlienReference) => {
   return {
-    date: `${alienTime.day}/${alienTime.month}/${alienTime.year}`,
-    time: `${alienTime.hour}:${alienTime.minute}:${alienTime.second}`
+    date: `${alienTime.day.toString().padStart(2, '0')}/${alienTime.month.toString().padStart(2, '0')}/${alienTime.year}`,
+    time: `${alienTime.hour.toString().padStart(2, '0')}:${alienTime.minute.toString().padStart(2, '0')}:${alienTime.second.toString().padStart(2, '0')}`
   }
 }
 
@@ -105,14 +105,4 @@ function convertDaysToDate(days: number) {
     month: monthPassed,
     day: remainingDays
   }
-}
-
-export function checkAlienAlarm(alarmSet: boolean, alarmTime: string, now: string): boolean {
-  if (alarmSet) {
-    const currentFormattedTime = now.toString().slice(0, 5)
-    if (alarmTime === currentFormattedTime) {
-      return true
-    }
-  }
-  return false
 }

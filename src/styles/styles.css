@@ -181,3 +181,32 @@ input[type='time']:focus {
   outline: none;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.873);
 }
+
+.reference-time {
+  background-color: rgb(185, 93, 0); /* change to your preferred color */
+  color: white;
+}
+
+.reference-time:hover {
+  background-color: rgb(141, 107, 74); /* slightly muted color */
+}
+
+.current-time {
+  background-color: rgb(115, 0, 128); /* change to your preferred color */
+  color: white;
+}
+
+.current-time:hover {
+  background-color: rgb(116, 59, 122); /* change to your preferred color */
+  color: white;
+}
+
+.alarm-time {
+  background-color: rgb(0, 137, 137); /* change to your preferred color */
+  color: white;
+}
+
+.alarm-time:hover {
+  background-color: rgb(74, 139, 139); /* change to your preferred color */
+  color: white;
+}
